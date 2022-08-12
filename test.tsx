@@ -1,7 +1,7 @@
 import React from 'react'
 import { buildFlatStore } from '.'
 
-const state = { email: '', rememberMe: false }
+const state = { email: '', rememberMe: false, other: { a: 1, b: 2 } }
 const { FlatStore, useFlatStore, useFlatStoreKey } = buildFlatStore(state)
 
 function SignInForm() {
@@ -29,6 +29,8 @@ function Email() {
 
 function RememberMe() {
   const { name, value, update } = useFlatStoreKey('rememberMe')
+  const { value: other, update: updateOther } = useFlatStoreKey('other')
+  updateOther({ a: other.a + 1, b: other.b + 2 })
 
   return (
     <input
@@ -40,16 +42,10 @@ function RememberMe() {
   )
 }
 
-const api = {
-  send: (data: { data: { email: string; rememberMe: boolean } }) => {
-    // pretend to send data
-  },
-}
-
 function Submit() {
   const { email, rememberMe } = useFlatStore()
   const submit = () => {
-    api.send({ data: { email, rememberMe } })
+    console.log('send: ', { email, rememberMe })
   }
 
   return <button onClick={submit}>Submit</button>
