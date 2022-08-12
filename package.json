@@ -1,0 +1,40 @@
+{
+  "name": "react-flat-store",
+  "version": "0.0.1",
+  "description": "Simple, flat context-based data store in React",
+  "main": "index.tsx",
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
+  },
+  "scripts": {
+    "build": "tsc",
+    "ppp": "npm patch && git push && npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aegatlin/react-flat-store.git"
+  },
+  "keywords": [
+    "react",
+    "storage",
+    "flat",
+    "typescript"
+  ],
+  "author": "Austin Gatlin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aegatlin/react-flat-store/issues"
+  },
+  "homepage": "https://github.com/aegatlin/react-flat-store#readme",
+  "devDependencies": {
+    "@types/node": "^18.7.1",
+    "@types/react": "^18.0.17",
+    "prettier": "^2.7.1",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "node": "^18.7.0",
+    "react": "^18.2.0"
+  }
+}
