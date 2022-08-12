@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "ppp": "npm patch && git push && npm publish"
+    "ppp": "npm version patch && git push && npm publish"
   },
   "repository": {
     "type": "git",
