@@ -11,7 +11,7 @@ Call `buildFlatStore` with an initial state. In return you get a React wrapper c
 
 ## Tutorial
 
-### Sign In Form
+### Simple Data Store
 
 Let's create a simple data store that will store and update a single child value, and then submit that data on button click.
 
@@ -92,7 +92,6 @@ function Parent() {
 - Outputs: store state
 
 ```tsx
-// assuming a form state of email and password...
 function Child() {
   const { a, b, c } = useFlatStore()
 
