@@ -2,7 +2,7 @@
 
 React Flat Store is a strongly typed flat storage solution in React.
 
-Call `buildFlatStore` with an initial state. In return you get a React wrapper component, `FlatStore` that stores the state and provides functionality to child components via two hooks. `useFlatStore` returns the entire state, and `useFlatStoreKey` return the `name` and `value` of a particular key, as well as an `update` function. That's it!
+Call `buildFlatStore` with initial state. Receive `Store`, a React component that stores the state, `useStore`, a React hook that returns the state, and `useKey`, a React hook that returns `key`, `value`, and `update` for a specific key. That's it!
 
 ## Table of Contents
 
@@ -21,24 +21,24 @@ npm i react-flat-store
 
 ```tsx
 const init = { child: 'initial' }
-const { FlatStore, useFlatStore, useFlatStoreKey } = buildFlatStore(init)
+const { Store, useStore, useKey } = buildFlatStore(init)
 
 function Parent() {
   return (
-    <FlatStore>
+    <Store>
       <Child />
       <Button />
-    </FlatStore>
+    </Store>
   )
 }
 
 function Child() {
-  const { name, value, update } = useFlatStoreKey('child')
+  const { key, value, update } = useKey('child')
 
   return (
     <input
       type="text"
-      name={name}
+      name={key}
       value={value}
       onChange={(e) => update(e.target.value)}
     />
@@ -46,9 +46,9 @@ function Child() {
 }
 
 function Button() {
-  const { child } = useFlatStore()
+  const { child } = useStore()
   const submit = () => {
-    console.log('do something with the payload: ', JSON.stringify({ child }))
+    console.log({ child })
   }
 
   return <button onClick={submit}>Submit</button>
@@ -57,68 +57,64 @@ function Button() {
 
 ## Reference
 
-Note: There is not a lot of code (under 50 lines). So it could be helpful to read it if you are stuck. Or send in a PR/Issue. Thanks! :D
+Note: There is not a lot of code (under 50 lines). So it could be helpful to read it if you are looking for more information.
 
 ### buildFlatStore
 
 - Input: initial state.
-- Output: `FlatStore`, `useFlatStore`, `useFlatStoreKey`
+- Output: `Store`, `useStore`, `useKey`
 
 ```ts
-const { FlatStore, useFlatStore, useFlatStoreKey } = buildForm({
+const { Store, useStore, useKey } = buildFlatStore({
   a: 1,
   b: '2',
   c: { three: 3 },
 })
 ```
 
-### FlatStore
+### Store
 
-`FlatStore` is a React component that stores your data and provides it (via React contexts) to the children components.
+`Store` is a React component that stores your data and provides it (via React contexts) to the children components.
 
 There are no props.
 
 ```tsx
 function Parent() {
-  return <FlatStore>...</FlatStore>
+  return <Store>...</Store>
 }
 ```
 
-### useFlatStore
+### useStore
 
-`useFlatStore` is a React hook that returns the state of the store.
+`useStore` is a React hook that returns the current state.
 
 - Inputs: none
-- Outputs: store state
+- Outputs: state
 
 ```tsx
 function Child() {
-  const { a, b, c } = useFlatStore()
+  const { a, b, c } = useStore()
 
   // ...
 }
 ```
 
-### useFlatStoreKey
+### useKey
 
-`useFlatStoreKey` is a React hook that returns a key's name and value, as well as an update function.
+`useKey` is a React hook that returns `key`, `value`, and an `update` function for a specific key.
 
-- Inputs: 
-  - `name`: The key name
-    - The key name is strongly typed, so typos or field names that are not present in the initial state will throw type errors.
+- Inputs:
+  - `key`: The key name. It is strongly typed, so typos or field names that are not present in the initial state will throw type errors.
 - Outputs:
-  - `name`: The key name.
-  - `value`: The value associated with that key. The value is strongly typed.
-  - `update`: An update function. The update function is strongly typed.
-    - Inputs: new `value`. Will throw a type error unless it matches the corresponding key's type.
+  - `key`: The key name.
+  - `value`: The key's value. It is strongly typed.
+  - `update`: An update function which updates the key's value. The update function is strongly typed.
+    - Inputs: new `value`. It is strongly typed
     - Outputs: void
 
 ```tsx
-// Assuming an initial store state of: { child: 'initial' }
-function ChildComponent() {
-  const { name, value, update } = useFlatStoreKey('child')
-  // name => 'child'; value => 'initial'
-
+function Child() {
+  const { key, value, update } = useKey('child')
   update('new string') // value => 'new string'
   update(4) // type error!
 

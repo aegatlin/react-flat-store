@@ -8,7 +8,7 @@ export function buildFlatStore<Store>(initialState: Store) {
     }
   )
 
-  function FlatStore({ children }: { children: ReactNode }) {
+  function Store({ children }: { children: ReactNode }) {
     const [state, setState] = useState<Store>(initialState)
     return (
       <Context.Provider value={{ state, setState }}>
@@ -17,26 +17,22 @@ export function buildFlatStore<Store>(initialState: Store) {
     )
   }
 
-  function useFlatStore(): Store {
+  function useStore(): Store {
     const { state } = useContext(Context)
     return state
   }
 
-  function useFlatStoreKey<Key extends keyof Store>(
+  function useKey<Key extends keyof Store>(
     key: Key
-  ): { name: Key; value: Store[Key]; update: (v: Store[Key]) => void } {
+  ): { key: Key; value: Store[Key]; update: (v: Store[Key]) => void } {
     const { state, setState } = useContext(Context)
 
     return {
-      name: key,
+      key,
       value: state[key],
       update: (value) => setState({ ...state, [key]: value }),
     }
   }
 
-  return {
-    FlatStore,
-    useFlatStore,
-    useFlatStoreKey,
-  }
+  return { Store, useStore, useKey }
 }

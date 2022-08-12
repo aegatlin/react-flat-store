@@ -30,26 +30,22 @@ function buildFlatStore(initialState) {
         state: initialState,
         setState: (s) => { },
     });
-    function FlatStore({ children }) {
+    function Store({ children }) {
         const [state, setState] = (0, react_1.useState)(initialState);
         return (react_1.default.createElement(Context.Provider, { value: { state, setState } }, children));
     }
-    function useFlatStore() {
+    function useStore() {
         const { state } = (0, react_1.useContext)(Context);
         return state;
     }
-    function useFlatStoreKey(key) {
+    function useKey(key) {
         const { state, setState } = (0, react_1.useContext)(Context);
         return {
-            name: key,
+            key,
             value: state[key],
             update: (value) => setState(Object.assign(Object.assign({}, state), { [key]: value })),
         };
     }
-    return {
-        FlatStore,
-        useFlatStore,
-        useFlatStoreKey,
-    };
+    return { Store, useStore, useKey };
 }
 exports.buildFlatStore = buildFlatStore;

@@ -2,25 +2,25 @@ import React from 'react'
 import { buildFlatStore } from '.'
 
 const state = { email: '', rememberMe: false, other: { a: 1, b: 2 } }
-const { FlatStore, useFlatStore, useFlatStoreKey } = buildFlatStore(state)
+const { Store, useStore, useKey } = buildFlatStore(state)
 
 function SignInForm() {
   return (
-    <FlatStore>
+    <Store>
       <Email />
       <RememberMe />
       <Submit />
-    </FlatStore>
+    </Store>
   )
 }
 
 function Email() {
-  const { name, value, update } = useFlatStoreKey('email')
+  const { key, value, update } = useKey('email')
 
   return (
     <input
       type="email"
-      name={name}
+      name={key}
       value={value}
       onChange={(e) => update(e.target.value)}
     />
@@ -28,14 +28,15 @@ function Email() {
 }
 
 function RememberMe() {
-  const { name, value, update } = useFlatStoreKey('rememberMe')
-  const { value: other, update: updateOther } = useFlatStoreKey('other')
+  const { key, value, update } = useKey('rememberMe')
+  const { value: other, update: updateOther } = useKey('other')
   updateOther({ a: other.a + 1, b: other.b + 2 })
+  // other => { a: 2, b: 4 }
 
   return (
     <input
       type="checkbox"
-      name={name}
+      name={key}
       checked={value}
       onChange={() => update(!value)}
     />
@@ -43,9 +44,9 @@ function RememberMe() {
 }
 
 function Submit() {
-  const { email, rememberMe } = useFlatStore()
+  const { email, rememberMe } = useStore()
   const submit = () => {
-    console.log('send: ', { email, rememberMe })
+    console.log({ email, rememberMe })
   }
 
   return <button onClick={submit}>Submit</button>

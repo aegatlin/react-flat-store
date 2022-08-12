@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
 export declare function buildFlatStore<Store>(initialState: Store): {
-    FlatStore: ({ children }: {
+    Store: ({ children }: {
         children: ReactNode;
     }) => JSX.Element;
-    useFlatStore: () => Store;
-    useFlatStoreKey: <Key extends keyof Store>(key: Key) => {
-        name: Key;
+    useStore: () => Store;
+    useKey: <Key extends keyof Store>(key: Key) => {
+        key: Key;
         value: Store[Key];
         update: (v: Store[Key]) => void;
     };
