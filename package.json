@@ -21,7 +21,7 @@
     "typescript"
   ],
   "author": "Austin Gatlin",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/aegatlin/react-flat-store/issues"
   },
