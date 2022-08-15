@@ -1,3 +1,11 @@
+/*
+
+Let's create a theme manager that fetches a user's default theme. (How one  
+updates the default theme is outside of the scope of this demo.) Let's also
+create a bespoke `useTheme` hook to make it easier to use.
+
+*/
+
 import React, { useEffect, useState } from 'react'
 import { buildFlatStore } from '../..'
 
@@ -7,15 +15,24 @@ enum Theme {
 }
 
 const { Store, useStore, useKey } = buildFlatStore({ theme: Theme.Light })
+const useTheme = () => {
+  const { value: theme, update } = useKey('theme')
+  return { theme, update }
+}
 
 function App() {
-  // This would use the default theme so you only had to define it once:
-  // const defaultTheme = useStore()
-  // const [theme, setTheme] = useState(defaultTheme)
-  //
-  // But it could be seen as bad practice to call a hook before it's context
-  // is initialized (via Store). As such, you can supply another default:
   const [theme, setTheme] = useState(Theme.Light)
+
+  /*
+
+  Alternatively, you could rely on the default theme you provide to 
+  `buildFlatStore`, though it is perhaps bad practice to call a 
+  context-sensitive hook before the context has been provided.
+
+  const defaultTheme = useStore()
+  const [theme, setTheme] = useState(defaultTheme)
+
+  */
 
   useEffect(() => {
     async function getTheme() {
@@ -25,7 +42,7 @@ function App() {
     }
 
     getTheme()
-  })
+  }, [theme])
 
   return (
     <Store state={{ theme }}>
@@ -36,8 +53,10 @@ function App() {
 }
 
 function Header() {
-  const { value: theme, update } = useKey('theme')
+  const { theme, update } = useTheme()
+
   const themeString = theme == Theme.Light ? 'light' : 'dark'
+
   const toggle = () => {
     theme == Theme.Light ? update(Theme.Dark) : update(Theme.Light)
   }
@@ -51,7 +70,8 @@ function Header() {
 }
 
 function Body() {
-  const { value: theme } = useKey('theme')
+  const { theme } = useTheme()
+
   const color = theme == Theme.Light ? 'bg-white' : 'bg-black'
 
   return <div className={color}></div>

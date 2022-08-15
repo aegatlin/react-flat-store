@@ -1,15 +1,17 @@
-import { buildFlatStore } from '../..'
-
 /*
 
-If you had multiple simple forms, you could rename the exports of 
-`buildFlatStore` to more semantically meaningful names while still keeping
-the builder generic:
+Let's say you had multiple, simple form pages. You could rename the exports of 
+`buildFlatStore` to more semantically meaningful for form, like `useForm` and
+`useField`, while still keeping the builder generic, so that it can read in
+various different initial states.
 
 */
 
-function formBuilder<FormState>(initialState: FormState) {
-  const { Store, useStore, useKey } = buildFlatStore(initialState)
+import React from 'react'
+import { buildFlatStore } from '../..'
+
+function formBuilder<FormState>(state: FormState) {
+  const { Store, useStore, useKey } = buildFlatStore(state)
   return { Form: Store, useForm: useStore, useField: useKey }
 }
 
@@ -17,6 +19,25 @@ function formBuilder<FormState>(initialState: FormState) {
 
 // SignInPage
 // const { Form, useForm, useField } = formBuilder({ email: '', password: '' })
+// ...
 
 // AddContactPage
-// const {Form, useForm, useField} = formBuilder({name: '', number: '', address: '', email: ''})
+const { Form, useForm, useField } = formBuilder({
+  name: '',
+  number: '',
+  address: '',
+  email: '',
+})
+
+function Email() {
+  const { key, value: email, update } = useField('email')
+
+  return (
+    <input
+      type="text"
+      name={key}
+      value={email}
+      onChange={(e) => update(e.target.value)}
+    />
+  )
+}

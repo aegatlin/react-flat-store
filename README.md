@@ -2,13 +2,25 @@
 
 React Flat Store is a strongly-typed state management utility ideally suited for simple state management needs.
 
-Call `buildFlatStore` with initial state. Receive `Store`, a React component that stores the state, `useStore`, a React hook that returns the state, and `useKey`, a React hook that returns `key`, `value`, and `update` for a specific key. That's it!
+```tsx
+const { Store, useStore, useKey } = buildFlatStore({ counter: 0 })
 
-## Table of Contents
+function CounterApp() {
+  return <Store>...</Store>
+}
 
-- Tutorials: A walkthrough of how to use React Flat Store
-- How To: Simple demos of how to accomplish particular tasks
-- Reference: Detailed explanation of the API
+function Counter() {
+  const { key, value, update } = useKey('counter')
+  const inc = () => update(value + 1)
+  const dec = () => update(value - 1)
+  // ...
+}
+
+function Submit() {
+  const { counter } = useStore()
+  // ...
+}
+```
 
 ## Tutorials
 
@@ -19,14 +31,13 @@ Call `buildFlatStore` with initial state. Receive `Store`, a React component tha
 
 - [Create bespoke hooks](/tests/howTo/bespokeHooks.tsx)
 - [Create generic hooks](/tests/howTo/genericHooks.tsx)
+- [Work with types and nested data](/tests/howTo/nestedData.tsx)
 
 ## Reference
 
-All the code is in a single, small, [index](/index.tsx) file. It can be a helpful reference in addition to the information below.
+The code is in a small [index.tsx](/index.tsx) file. Reading it could be a helpful reference in addition to the information below.
 
 ### buildFlatStore
-
-`buildFlatStore` creates a React context from the input default state. That context is then leveraged internally by the returned component and hooks.
 
 - Input: Default state
 - Output: An object containing `Store`, `useStore`, and `useKey`
@@ -41,7 +52,7 @@ const { Store, useStore, useKey } = buildFlatStore({
 
 ### Store
 
-`Store` is a React component that stores the state. There are no required props.
+`Store` is a React component that provides the state for its component hierarchy. There are no required props.
 
 ```tsx
 function Parent() {
@@ -49,26 +60,13 @@ function Parent() {
 }
 ```
 
-If the default state from `buildFlatStore` is insufficient, you can use the optional `state` key to set the state reactively. It has to be the same type as the default state.
+There is one optional prop, `state`, which allows you to set the state reactively. It is strongly typed to the default state from `buildFlatStore`.
 
 ```tsx
 function Parent() {
-  const [state, setState] = useState({ a: 2, b: '3', c: { four: 4 } })
+  const [state, setState] = useState({ a: 1, b: '2', c: { three: 3 } })
 
-  /*
-
-  State can be retrieved here, asynchronously, via useEffect, etc.
-
-  useEffect(() => {
-    async function getData() {
-      ...
-      setState({...})
-    }
-
-    getData()
-  }, [])
-
-  */
+  // async state updates can occur here...
 
   return <Store state={state}>...</Store>
 }
@@ -88,7 +86,7 @@ function Child() {
 
 ### useKey
 
-`useKey` is a React hook that returns `key`, `value`, and an `update` function for a specific key. The only input is a strongly typed `key` value.
+`useKey` is a React hook that returns `key`, `value`, and an `update` function for a specific key. The only input is a strongly typed `key` name.
 
 - Input: The key name. Strongly typed. Typos or non-existent field names will result in type errors.
 - Outputs:
@@ -99,8 +97,8 @@ function Child() {
 ```tsx
 function Child() {
   const { key, value, update } = useKey('child')
-  update('new string') // value => 'new string'
-  update(4) // type error!
+  
+  const onClick = () => update('new value')
 
   // ...
 }

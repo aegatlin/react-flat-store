@@ -1,6 +1,3 @@
-import React from 'react'
-import { buildFlatStore } from '../..'
-
 /*
 
 Bespoke hooks are simple hooks that depend on `useKey`, but rearrange or 
@@ -8,6 +5,9 @@ rename the return values. This can simplify the developer experience when
 working with keys.
 
 */
+
+import React from 'react'
+import { buildFlatStore } from '../..'
 
 const { useKey } = buildFlatStore({ email: '', password: '' })
 

@@ -1,3 +1,9 @@
+/*
+
+Let's create a simple sign-in form for users.
+
+*/
+
 import React from 'react'
 import { buildFlatStore } from '../..'
 
@@ -5,17 +11,6 @@ const { Store, useStore, useKey } = buildFlatStore({
   email: '',
   rememberMe: false,
 })
-
-// You could also rename the exports so that the component and hooks
-// are more semantically meaningful:
-// const {
-//   Store: Form,
-//   useStore: useForm,
-//   useKey: useField,
-// } = buildFlatStore({
-//   email: '',
-//   rememberMe: false,
-// })
 
 function SignInForm() {
   return (
