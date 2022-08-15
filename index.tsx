@@ -1,38 +1,50 @@
-import React, { createContext, ReactNode, useContext, useState } from 'react'
+import React, {
+  createContext,
+  Dispatch,
+  FunctionComponent,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useState,
+} from 'react'
 
-export function buildFlatStore<Store>(initialState: Store) {
-  const Context = createContext<{ state: Store; setState: (s: Store) => void }>(
-    {
-      state: initialState,
-      setState: (s: Store) => {},
-    }
-  )
-
-  function Store({ children }: { children: ReactNode }) {
-    const [state, setState] = useState<Store>(initialState)
-    return (
-      <Context.Provider value={{ state, setState }}>
-        {children}
-      </Context.Provider>
-    )
-  }
-
-  function useStore(): Store {
-    const { state } = useContext(Context)
-    return state
-  }
-
-  function useKey<Key extends keyof Store>(
+export function buildFlatStore<State>(init: State): {
+  Store: FunctionComponent<{ state?: State; children: ReactNode }>
+  useStore: () => State
+  useKey: <Key extends keyof State>(
     key: Key
-  ): { key: Key; value: Store[Key]; update: (v: Store[Key]) => void } {
-    const { state, setState } = useContext(Context)
+  ) => { key: Key; value: State[Key]; update: (v: State[Key]) => void }
+} {
+  const Context = createContext<{
+    state: State
+    setState: Dispatch<SetStateAction<State>>
+  }>({
+    state: init,
+    setState: () => {},
+  })
 
-    return {
-      key,
-      value: state[key],
-      update: (value) => setState({ ...state, [key]: value }),
-    }
+  return {
+    Store({ children, state }) {
+      const [_state, _setState] = useState(state || init)
+
+      return (
+        <Context.Provider value={{ state: _state, setState: _setState }}>
+          {children}
+        </Context.Provider>
+      )
+    },
+    useStore() {
+      const { state } = useContext(Context)
+      return state
+    },
+    useKey(key) {
+      const { state, setState } = useContext(Context)
+
+      return {
+        key,
+        value: state[key],
+        update: (value) => setState({ ...state, [key]: value }),
+      }
+    },
   }
-
-  return { Store, useStore, useKey }
 }

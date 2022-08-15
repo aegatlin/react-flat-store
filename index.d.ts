@@ -1,12 +1,13 @@
-import { ReactNode } from 'react';
-export declare function buildFlatStore<Store>(initialState: Store): {
-    Store: ({ children }: {
+import { FunctionComponent, ReactNode } from 'react';
+export declare function buildFlatStore<State>(init: State): {
+    Store: FunctionComponent<{
+        state?: State;
         children: ReactNode;
-    }) => JSX.Element;
-    useStore: () => Store;
-    useKey: <Key extends keyof Store>(key: Key) => {
+    }>;
+    useStore: () => State;
+    useKey: <Key extends keyof State>(key: Key) => {
         key: Key;
-        value: Store[Key];
-        update: (v: Store[Key]) => void;
+        value: State[Key];
+        update: (v: State[Key]) => void;
     };
 };

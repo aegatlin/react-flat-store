@@ -1,68 +1,35 @@
 # React Flat Store
 
-React Flat Store is a strongly typed flat storage solution in React.
+React Flat Store is a strongly-typed state management utility ideally suited for simple state management needs.
 
 Call `buildFlatStore` with initial state. Receive `Store`, a React component that stores the state, `useStore`, a React hook that returns the state, and `useKey`, a React hook that returns `key`, `value`, and `update` for a specific key. That's it!
 
 ## Table of Contents
 
-- Tutorial: A walkthrough of how to use React Flat Store
+- Tutorials: A walkthrough of how to use React Flat Store
+- How To: Simple demos of how to accomplish particular tasks
 - Reference: Detailed explanation of the API
 
-## Tutorial
+## Tutorials
 
-### Simple Data Store
+- [Create a simple sign in form](/tests/tutorials/signInForm.tsx)
+- [Create a theme manager](/tests/tutorials/theme.tsx)
 
-Let's create a simple data store that will store and update a single child value, and then submit that data on button click.
+## How To
 
-```sh
-npm i react-flat-store
-```
-
-```tsx
-const init = { child: 'initial' }
-const { Store, useStore, useKey } = buildFlatStore(init)
-
-function Parent() {
-  return (
-    <Store>
-      <Child />
-      <Button />
-    </Store>
-  )
-}
-
-function Child() {
-  const { key, value, update } = useKey('child')
-
-  return (
-    <input
-      type="text"
-      name={key}
-      value={value}
-      onChange={(e) => update(e.target.value)}
-    />
-  )
-}
-
-function Button() {
-  const { child } = useStore()
-  const submit = () => {
-    console.log({ child })
-  }
-
-  return <button onClick={submit}>Submit</button>
-}
-```
+- [Create bespoke hooks](/tests/howTo/bespokeHooks.tsx)
+- [Create generic hooks](/tests/howTo/genericHooks.tsx)
 
 ## Reference
 
-Note: There is not a lot of code (under 50 lines). So it could be helpful to read it if you are looking for more information.
+All the code is in a single, small, [index](/index.tsx) file. It can be a helpful reference in addition to the information below.
 
 ### buildFlatStore
 
-- Input: initial state.
-- Output: `Store`, `useStore`, `useKey`
+`buildFlatStore` creates a React context from the input default state. That context is then leveraged internally by the returned component and hooks.
+
+- Input: Default state
+- Output: An object containing `Store`, `useStore`, and `useKey`
 
 ```ts
 const { Store, useStore, useKey } = buildFlatStore({
@@ -74,9 +41,7 @@ const { Store, useStore, useKey } = buildFlatStore({
 
 ### Store
 
-`Store` is a React component that stores your data and provides it (via React contexts) to the children components.
-
-There are no props.
+`Store` is a React component that stores the state. There are no required props.
 
 ```tsx
 function Parent() {
@@ -84,12 +49,34 @@ function Parent() {
 }
 ```
 
+If the default state from `buildFlatStore` is insufficient, you can use the optional `state` key to set the state reactively. It has to be the same type as the default state.
+
+```tsx
+function Parent() {
+  const [state, setState] = useState({ a: 2, b: '3', c: { four: 4 } })
+
+  /*
+
+  State can be retrieved here, asynchronously, via useEffect, etc.
+
+  useEffect(() => {
+    async function getData() {
+      ...
+      setState({...})
+    }
+
+    getData()
+  }, [])
+
+  */
+
+  return <Store state={state}>...</Store>
+}
+```
+
 ### useStore
 
-`useStore` is a React hook that returns the current state.
-
-- Inputs: none
-- Outputs: state
+`useStore` is a React hook that returns the current state. There are no inputs.
 
 ```tsx
 function Child() {
@@ -101,16 +88,13 @@ function Child() {
 
 ### useKey
 
-`useKey` is a React hook that returns `key`, `value`, and an `update` function for a specific key.
+`useKey` is a React hook that returns `key`, `value`, and an `update` function for a specific key. The only input is a strongly typed `key` value.
 
-- Inputs:
-  - `key`: The key name. It is strongly typed, so typos or field names that are not present in the initial state will throw type errors.
+- Input: The key name. Strongly typed. Typos or non-existent field names will result in type errors.
 - Outputs:
   - `key`: The key name.
-  - `value`: The key's value. It is strongly typed.
-  - `update`: An update function which updates the key's value. The update function is strongly typed.
-    - Inputs: new `value`. It is strongly typed
-    - Outputs: void
+  - `value`: The key's value. Strongly typed.
+  - `update`: An update function which updates the key's value to a new value. Strongly typed. No output.
 
 ```tsx
 function Child() {

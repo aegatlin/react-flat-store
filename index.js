@@ -25,27 +25,28 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.buildFlatStore = void 0;
 const react_1 = __importStar(require("react"));
-function buildFlatStore(initialState) {
+function buildFlatStore(init) {
     const Context = (0, react_1.createContext)({
-        state: initialState,
-        setState: (s) => { },
+        state: init,
+        setState: () => { },
     });
-    function Store({ children }) {
-        const [state, setState] = (0, react_1.useState)(initialState);
-        return (react_1.default.createElement(Context.Provider, { value: { state, setState } }, children));
-    }
-    function useStore() {
-        const { state } = (0, react_1.useContext)(Context);
-        return state;
-    }
-    function useKey(key) {
-        const { state, setState } = (0, react_1.useContext)(Context);
-        return {
-            key,
-            value: state[key],
-            update: (value) => setState(Object.assign(Object.assign({}, state), { [key]: value })),
-        };
-    }
-    return { Store, useStore, useKey };
+    return {
+        Store({ children, state }) {
+            const [_state, _setState] = (0, react_1.useState)(state || init);
+            return (react_1.default.createElement(Context.Provider, { value: { state: _state, setState: _setState } }, children));
+        },
+        useStore() {
+            const { state } = (0, react_1.useContext)(Context);
+            return state;
+        },
+        useKey(key) {
+            const { state, setState } = (0, react_1.useContext)(Context);
+            return {
+                key,
+                value: state[key],
+                update: (value) => setState(Object.assign(Object.assign({}, state), { [key]: value })),
+            };
+        },
+    };
 }
 exports.buildFlatStore = buildFlatStore;
