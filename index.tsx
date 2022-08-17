@@ -8,7 +8,7 @@ import React, {
   useState,
 } from 'react'
 
-export function buildFlatStore<State>(init: State): {
+export function createFlatStore<State>(init: State): {
   Store: FunctionComponent<{ state?: State; children: ReactNode }>
   useStore: () => State
   useKey: <Key extends keyof State>(

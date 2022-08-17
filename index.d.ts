@@ -1,5 +1,5 @@
 import { FunctionComponent, ReactNode } from 'react';
-export declare function buildFlatStore<State>(init: State): {
+export declare function createFlatStore<State>(init: State): {
     Store: FunctionComponent<{
         state?: State;
         children: ReactNode;

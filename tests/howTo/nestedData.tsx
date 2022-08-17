@@ -2,7 +2,7 @@
 
 Nested data is strongly typed. Default values like `{ a: [] }` will prevent
 TypeScript's type-inference capabilities from working properly. In such
-scenarios, you should provide a type to `buildFlatStore`.
+scenarios, you should provide a type to `createFlatStore`.
 
 Note: Updating deeply nested data will be difficult in this library because it is
 optimized for flat storage needs. Introducing functionality that would
@@ -12,7 +12,7 @@ an anti-goal.
 */
 
 import React from 'react'
-import { buildFlatStore } from '../..'
+import { createFlatStore } from '../..'
 
 interface Nested {
   a: {
@@ -23,7 +23,7 @@ interface Nested {
   }
 }
 
-const { Store, useKey } = buildFlatStore<Nested>({ a: { b: { c: 0, d: [] } } })
+const { Store, useKey } = createFlatStore<Nested>({ a: { b: { c: 0, d: [] } } })
 
 function App() {
   return (

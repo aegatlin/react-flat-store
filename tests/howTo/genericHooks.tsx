@@ -1,17 +1,17 @@
 /*
 
 Let's say you had multiple, simple form pages. You could rename the exports of 
-`buildFlatStore` to more semantically meaningful for form, like `useForm` and
+`createFlatStore` to more semantically meaningful for form, like `useForm` and
 `useField`, while still keeping the builder generic, so that it can read in
 various different initial states.
 
 */
 
 import React from 'react'
-import { buildFlatStore } from '../..'
+import { createFlatStore } from '../..'
 
 function formBuilder<FormState>(state: FormState) {
-  const { Store, useStore, useKey } = buildFlatStore(state)
+  const { Store, useStore, useKey } = createFlatStore(state)
   return { Form: Store, useForm: useStore, useField: useKey }
 }
 

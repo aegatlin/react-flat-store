@@ -23,9 +23,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buildFlatStore = void 0;
+exports.createFlatStore = void 0;
 const react_1 = __importStar(require("react"));
-function buildFlatStore(init) {
+function createFlatStore(init) {
     const Context = (0, react_1.createContext)({
         state: init,
         setState: () => { },
@@ -49,4 +49,4 @@ function buildFlatStore(init) {
         },
     };
 }
-exports.buildFlatStore = buildFlatStore;
+exports.createFlatStore = createFlatStore;

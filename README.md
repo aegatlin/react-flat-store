@@ -3,7 +3,7 @@
 React Flat Store is a strongly-typed state management utility ideally suited for simple state management needs.
 
 ```tsx
-const { Store, useStore, useKey } = buildFlatStore({ counter: 0 })
+const { Store, useStore, useKey } = createFlatStore({ counter: 0 })
 
 function CounterApp() {
   return <Store>...</Store>
@@ -37,13 +37,13 @@ function Submit() {
 
 The code is in a small [index.tsx](/index.tsx) file. Reading it could be a helpful reference in addition to the information below.
 
-### buildFlatStore
+### createFlatStore
 
 - Input: Default state
 - Output: An object containing `Store`, `useStore`, and `useKey`
 
 ```ts
-const { Store, useStore, useKey } = buildFlatStore({
+const { Store, useStore, useKey } = createFlatStore({
   a: 1,
   b: '2',
   c: { three: 3 },
@@ -60,7 +60,7 @@ function Parent() {
 }
 ```
 
-There is one optional prop, `state`, which allows you to set the state reactively. It is strongly typed to the default state from `buildFlatStore`.
+There is one optional prop, `state`, which allows you to set the state reactively. It is strongly typed to the default state from `createFlatStore`.
 
 ```tsx
 function Parent() {

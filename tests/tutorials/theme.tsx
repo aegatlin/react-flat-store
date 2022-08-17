@@ -7,14 +7,14 @@ create a bespoke `useTheme` hook to make it easier to use.
 */
 
 import React, { useEffect, useState } from 'react'
-import { buildFlatStore } from '../..'
+import { createFlatStore } from '../..'
 
 enum Theme {
   Light,
   Dark,
 }
 
-const { Store, useStore, useKey } = buildFlatStore({ theme: Theme.Light })
+const { Store, useStore, useKey } = createFlatStore({ theme: Theme.Light })
 const useTheme = () => {
   const { value: theme, update } = useKey('theme')
   return { theme, update }
@@ -26,7 +26,7 @@ function App() {
   /*
 
   Alternatively, you could rely on the default theme you provide to 
-  `buildFlatStore`, though it is perhaps bad practice to call a 
+  `createFlatStore`, though it is perhaps bad practice to call a
   context-sensitive hook before the context has been provided.
 
   const defaultTheme = useStore()

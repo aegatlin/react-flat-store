@@ -7,9 +7,9 @@ working with keys.
 */
 
 import React from 'react'
-import { buildFlatStore } from '../..'
+import { createFlatStore } from '../..'
 
-const { useKey } = buildFlatStore({ email: '', password: '' })
+const { useKey } = createFlatStore({ email: '', password: '' })
 
 const useEmail = () => {
   const { value: email, update } = useKey('email')

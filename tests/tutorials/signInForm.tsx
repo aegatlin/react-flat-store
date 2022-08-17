@@ -5,9 +5,9 @@ Let's create a simple sign-in form for users.
 */
 
 import React from 'react'
-import { buildFlatStore } from '../..'
+import { createFlatStore } from '../..'
 
-const { Store, useStore, useKey } = buildFlatStore({
+const { Store, useStore, useKey } = createFlatStore({
   email: '',
   rememberMe: false,
 })
