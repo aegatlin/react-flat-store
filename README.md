@@ -10,9 +10,8 @@ function CounterApp() {
 }
 
 function Counter() {
-  const { key, value, update } = useKey('counter')
-  const inc = () => update(value + 1)
-  const dec = () => update(value - 1)
+  const { key, value, update } = useKey('counter') // type-safe input
+  const increment = () => update(value + 1)
   // ...
 }
 
@@ -97,7 +96,7 @@ function Child() {
 ```tsx
 function Child() {
   const { key, value, update } = useKey('child')
-  
+
   const onClick = () => update('new value')
 
   // ...

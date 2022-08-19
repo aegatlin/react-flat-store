@@ -2,6 +2,8 @@
 
 Let's create a simple sign-in form for users.
 
+(For an even simpler developer experience, see bespoke hooks in the How-To's.)
+
 */
 
 import React from 'react'
