@@ -2,7 +2,13 @@
 
 React Flat Store is a strongly-typed state management utility ideally suited for simple state management needs.
 
+```sh
+npm install react-flat-store
+```
+
 ```tsx
+import { createFlatStore } from 'react-flat-store'
+
 const { Store, useStore, useKey } = createFlatStore({ counter: 0 })
 
 function CounterApp() {
