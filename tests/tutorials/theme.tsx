@@ -10,11 +10,12 @@ import React, { useEffect, useState } from 'react'
 import { createFlatStore } from '../..'
 
 enum Theme {
-  Light,
-  Dark,
+  Light = 'light',
+  Dark = 'dark',
 }
 
 const { Store, useStore, useKey } = createFlatStore({ theme: Theme.Light })
+
 const useTheme = () => {
   const { value: theme, update } = useKey('theme')
   return { theme, update }
@@ -25,19 +26,27 @@ function App() {
 
   /*
 
-  Alternatively, you could rely on the default theme you provide to 
+  Alternatively, you could rely on the default theme you provided to
   `createFlatStore`, though it is perhaps bad practice to call a
-  context-sensitive hook before the context has been provided.
+  context-sensitive hook before the context itself has been provided.
 
-  const defaultTheme = useStore()
+  const { theme: defaultTheme } = useStore()
   const [theme, setTheme] = useState(defaultTheme)
 
   */
 
   useEffect(() => {
     async function getTheme() {
-      // async fetch...
-      // let's say the user set his theme to Dark
+      /*
+
+      If the user's default theme is Theme.Dark, you might run into a problem
+      where the pre-fetch theme is Theme.Light, and it would then unpleasantly
+      flash from Light -> Dark . While not within the scope of this library,
+      possible solutions include: server-side props; isLoading state that
+      is true until initial fetch completion.
+
+      */
+
       setTheme(Theme.Dark)
     }
 
@@ -55,15 +64,11 @@ function App() {
 function Header() {
   const { theme, update } = useTheme()
 
-  const themeString = theme == Theme.Light ? 'light' : 'dark'
-
-  const toggle = () => {
-    theme == Theme.Light ? update(Theme.Dark) : update(Theme.Light)
-  }
+  const toggle = () => update(theme == Theme.Light ? Theme.Dark : Theme.Light)
 
   return (
     <div>
-      <div>{themeString}</div>
+      <div>{theme}</div>
       <button onClick={toggle}>Toggle</button>
     </div>
   )
