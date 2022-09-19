@@ -1,15 +1,15 @@
 /*
 
-Bespoke hooks are simple hooks that depend on `useKey`, but rearrange or 
-rename the return values. This can simplify the developer experience when
-working with keys.
+Bespoke hooks are simple hooks that depend on `useKey`, but which either
+rearrange or rename the return values. This can simplify the developer
+experience when working with keys.
 
 */
 
 import React from 'react'
-import { createFlatStore } from '../..'
+import { createContextStore } from '../..'
 
-const { useKey } = createFlatStore({ email: '', password: '' })
+const { useKey } = createContextStore({ email: '', password: '' })
 
 const useEmail = () => {
   const { value: email, update } = useKey('email')

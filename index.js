@@ -23,21 +23,45 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createFlatStore = void 0;
+exports.createContextStore = exports.useStore = void 0;
 const react_1 = __importStar(require("react"));
-function createFlatStore(init) {
+/**
+ * `useStore` is a React hook.
+ * @param {State} initialState - The initial state.
+ * @returns `state`, the current state; `set`, a function that overwrites the
+ * state; `update`, a function that updates a specific key.
+ */
+function useStore(initialState) {
+    const [state, setState] = (0, react_1.useState)(initialState);
+    return {
+        state,
+        set: (state) => setState(state),
+        update: (key, value) => setState(Object.assign(Object.assign({}, state), { [key]: value })),
+    };
+}
+exports.useStore = useStore;
+/**
+ * createContextStore is a React Context based API.
+ * @param {State} initialState - The initial state. Can also be provided via the returned `Store` component
+ * @returns An object containing a Store component, a useStore hook, and a useKey hook
+ */
+function createContextStore(initialState) {
     const Context = (0, react_1.createContext)({
-        state: init,
+        state: initialState,
         setState: () => { },
     });
     return {
-        Store({ children, state }) {
-            const [_state, _setState] = (0, react_1.useState)(state || init);
-            return (react_1.default.createElement(Context.Provider, { value: { state: _state, setState: _setState } }, children));
+        Store({ state, children }) {
+            const [s, setS] = (0, react_1.useState)(state || initialState);
+            return (react_1.default.createElement(Context.Provider, { value: { state: s, setState: setS } }, children));
         },
         useStore() {
-            const { state } = (0, react_1.useContext)(Context);
-            return state;
+            const { state, setState } = (0, react_1.useContext)(Context);
+            return {
+                state,
+                set: (state) => setState(state),
+                update: (key, value) => setState(Object.assign(Object.assign({}, state), { [key]: value })),
+            };
         },
         useKey(key) {
             const { state, setState } = (0, react_1.useContext)(Context);
@@ -49,4 +73,4 @@ function createFlatStore(init) {
         },
     };
 }
-exports.createFlatStore = createFlatStore;
+exports.createContextStore = createContextStore;

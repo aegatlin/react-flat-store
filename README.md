@@ -1,110 +1,171 @@
 # React Flat Store
 
-React Flat Store is a strongly-typed state management utility ideally suited for simple state management needs.
+React Flat Store is a strongly-typed state management utility ideally suited for "flat" data. There is a simple `useStore` API for component state management, and a `createContextStore` API for multi-component state management using React Contexts.
 
 ```sh
 npm install react-flat-store
 ```
 
-```tsx
-import { createFlatStore } from 'react-flat-store'
+```js
+// Simple use case
+import { useStore } from 'react-flat-store'
 
-const { Store, useStore, useKey } = createFlatStore({ counter: 0 })
+function SimpleCounter() {
+  const {
+    state: { counter },
+    update,
+  } = useStore({ counter: 0 })
 
-function CounterApp() {
-  return <Store>...</Store>
+  const inc = () => update('counter', counter + 1)
+  const dec = () => update('counter', counter - 1)
+
+  return (
+    <div>
+      <button onClick={inc}>Increment</button>
+      <button onClick={dec}>Decrement</button>
+      <span>{counter}</span>
+    </div>
+  )
+}
+```
+
+```js
+// Context-based use case
+import { createContextStore } from 'react-flat-store'
+
+const { Store, useStore, useKey } = createContextStore({ counter: 0 })
+const useCounter = () => useKey('counter')
+
+function ContextCounter() {
+  return (
+    <Store>
+      <div>
+        <Increment />
+        <Decrement />
+        <Counter />
+      </div>
+      <Submit />
+    </Store>
+  )
+}
+
+function Increment() {
+  const { value, update } = useCounter()
+  return <button onClick={() => update(value + 1)}>Increment</button>
+}
+
+function Decrement() {
+  const { value, update } = useCounter()
+  return <button onClick={() => update(value - 1)}>Decrement</button>
 }
 
 function Counter() {
-  const { key, value, update } = useKey('counter') // type-safe input
-  const increment = () => update(value + 1)
-  // ...
+  const { value } = useCounter()
+  return <span>{value}</span>
 }
 
 function Submit() {
-  const { counter } = useStore()
-  // ...
+  const { state } = useStore()
+  const submit = () => console.log(state)
+  return <button onClick={submit}>Submit</button>
 }
 ```
 
 ## Tutorials
 
-- [Create a simple sign in form](/tests/tutorials/signInForm.tsx)
-- [Create a theme manager](/tests/tutorials/theme.tsx)
+- [Create a simple sign in form in a single component using `useStore`](./tests/tutorials/singInFormSingleComponent.tsx)
+- [Create a simple sign in form across multiple component using `useContextStore`](./tests/tutorials/signInFormMutipleComponents.tsx)
+- [Create a theme manager](./tests/tutorials/theme.tsx)
 
 ## How To
 
-- [Create bespoke hooks](/tests/howTo/bespokeHooks.tsx)
-- [Create generic hooks](/tests/howTo/genericHooks.tsx)
-- [Work with types and nested data](/tests/howTo/nestedData.tsx)
+- [Create bespoke hooks](./tests/howTo/bespokeHooks.tsx)
+- [Create generic hooks](./tests/howTo/genericHooks.tsx)
+- [Work with types and nested data](./tests/howTo/nestedData.tsx)
 
 ## Reference
 
-The code is in a small [index.tsx](/index.tsx) file. Reading it could be a helpful reference in addition to the information below.
+### useStore
 
-### createFlatStore
+- Input: initial state
+- Output: An object containing `state`, `set`, and `update`
 
-- Input: Default state
+```js
+function Component() {
+  const { state, set, update } = useStore({ a: 1, b: '2' })
+}
+```
+
+`state` is the current state.
+
+`set` is a function that overwrites the entire state: `set(newState)`
+
+`update` is a function that updates a particular key: `update(key, newValue)`
+
+### createContextStore
+
+- Input: initial state
 - Output: An object containing `Store`, `useStore`, and `useKey`
 
 ```ts
-const { Store, useStore, useKey } = createFlatStore({
+const { Store, useStore, useKey } = createContextStore({
   a: 1,
   b: '2',
   c: { three: 3 },
 })
 ```
 
-### Store
+#### Store
 
-`Store` is a React component that provides the state for its component hierarchy. There are no required props.
+`Store` is a React component that provides state context. There are no required props and one optional prop, `state`. It is recommended to supply the state when you call `createContextStore`, but you might not know the initial values until a runtime fetch, in which case you can provide the `state` inline.
 
 ```tsx
-function Parent() {
-  return <Store>...</Store>
+function Parent({ children }) {
+  return <Store>{children}</Store>
 }
 ```
 
-There is one optional prop, `state`, which allows you to set the state reactively. It is strongly typed to the default state from `createFlatStore`.
-
 ```tsx
-function Parent() {
-  const [state, setState] = useState({ a: 1, b: '2', c: { three: 3 } })
+function Parent({ children }) {
+  const [payload, setPayload] = useState({ a: 0, b: '', c: { three: 0 } })
 
-  // async state updates can occur here...
+  useEffect(() => {
+    const getData = async () => {
+      const newPayload = await Promise.resolve({
+        a: 1,
+        b: '2',
+        c: { three: 3 },
+      })
+      setPayload(newPayload)
+    }
 
-  return <Store state={state}>...</Store>
+    getData()
+  }, [])
+
+  return <Store state={payload}>{children}</Store>
 }
 ```
 
-### useStore
+#### useStore
 
-`useStore` is a React hook that returns the current state. There are no inputs.
+`useStore` is a React hook that behaves identically to the context-less `useStore` API listed above. It returns `state`, `set`, and `update`. There are no inputs.
 
-```tsx
-function Child() {
-  const { a, b, c } = useStore()
+#### useKey
 
-  // ...
-}
-```
-
-### useKey
-
-`useKey` is a React hook that returns `key`, `value`, and an `update` function for a specific key. The only input is a strongly typed `key` name.
-
-- Input: The key name. Strongly typed. Typos or non-existent field names will result in type errors.
+- Input: `key: string`. The key name.
 - Outputs:
-  - `key`: The key name.
-  - `value`: The key's value. Strongly typed.
-  - `update`: An update function which updates the key's value to a new value. Strongly typed. No output.
+  - `key: string`: The key name.
+  - `value: State[Key]`: The key's value. Strongly typed.
+  - `update: (key: string, newValue: State[Key]) => void`: An update function which updates the key's value to a new value. Strongly typed. No output.
 
 ```tsx
+const { Store, useStore, useKey } = createContextStore({ a: 1 })
+
 function Child() {
-  const { key, value, update } = useKey('child')
+  const { key, value, update } = useKey('a')
 
-  const onClick = () => update('new value')
+  console.log(key, value) // initially => 'a', 1
 
-  // ...
+  update(2) // eventually => 'a', 2
 }
 ```

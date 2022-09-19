@@ -2,14 +2,21 @@
 
 Let's create a simple sign-in form for users.
 
-(For an even simpler developer experience, see bespoke hooks in the How-To's.)
+(If the sign in form really _was_ this simple, we would probably use the
+`useStore` API. But, for this tutorial, let's assume that some additional
+complexity is present which encourages breaking down the component hierarchy. We
+will then want to use the context-based `createContextStore` API to simplify the
+multiple-component data management experience.)
+
+(For an even simpler child component developer experience, see bespoke hooks in
+the How-To's.)
 
 */
 
 import React from 'react'
-import { createFlatStore } from '../..'
+import { createContextStore } from '../..'
 
-const { Store, useStore, useKey } = createFlatStore({
+const { Store, useStore, useKey } = createContextStore({
   email: '',
   rememberMe: false,
 })
@@ -51,10 +58,12 @@ function RememberMe() {
 }
 
 function Submit() {
-  const { email, rememberMe } = useStore()
+  const {
+    state: { email, rememberMe },
+  } = useStore()
+
   const submit = () => {
-    // async post...
-    console.log({ email, rememberMe })
+    console.log('submitting JSON payload: ', { data: { email, rememberMe } })
   }
 
   return <button onClick={submit}>Submit</button>

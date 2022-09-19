@@ -1,44 +1,55 @@
-import React, { useState } from 'react'
-import { createFlatStore } from '../..'
+import React, { useEffect, useState } from 'react'
+import { createContextStore, useStore } from '../..'
 
 {
-  const { Store, useStore, useKey } = createFlatStore({
+  function Component() {
+    const { state, set, update } = useStore({ a: 1, b: '2' })
+  }
+}
+
+{
+  const { Store, useStore, useKey } = createContextStore({
     a: 1,
     b: '2',
     c: { three: 3 },
   })
 
   {
-    function Parent() {
-      return <Store>...</Store>
+    function Parent({ children }) {
+      return <Store>{children}</Store>
     }
   }
 
   {
-    function ParentV2() {
-      const [state, setState] = useState({ a: 1, b: '2', c: { three: 3 } })
+    function Parent({ children }) {
+      const [payload, setPayload] = useState({ a: 0, b: '', c: { three: 0 } })
 
-      // async state updates can occur here...
+      useEffect(() => {
+        const getData = async () => {
+          const newPayload = await Promise.resolve({
+            a: 1,
+            b: '2',
+            c: { three: 3 },
+          })
+          setPayload(newPayload)
+        }
 
-      return <Store state={state}>...</Store>
+        getData()
+      }, [])
+
+      return <Store state={payload}>{children}</Store>
     }
   }
 
-  function Child() {
-    const { a, b, c } = useStore()
+  {
+    const { Store, useStore, useKey } = createContextStore({ a: 1 })
 
-    // ...
-  }
-}
+    function Child() {
+      const { key, value, update } = useKey('a')
 
-{
-  const { Store, useStore, useKey } = createFlatStore({ someKey: '' })
+      console.log(key, value) // initially => 'a', 1
 
-  function Child() {
-    const { key, value, update } = useKey('someKey')
-
-    const onClick = () => update('new value')
-
-    // ...
+      update(2) // eventually => 'a', 2
+    }
   }
 }
