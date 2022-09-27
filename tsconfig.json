@@ -7,7 +7,8 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "declaration": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "outDir": "dist"
   },
-  "files": ["index.tsx"]
+  "files": ["lib/index.tsx"]
 }
