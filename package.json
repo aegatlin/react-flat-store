@@ -1,6 +1,6 @@
 {
   "name": "react-flat-store",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Simple, flat context-based data store in React",
   "prettier": {
     "semi": false,
