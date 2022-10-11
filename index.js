@@ -35,7 +35,7 @@ function useStore(initialState) {
     const [state, setState] = (0, react_1.useState)(initialState);
     return {
         state,
-        set: (state) => setState(state),
+        set: (state) => setState((prev) => Object.assign({}, prev, state)),
         update: (key, value) => setState(Object.assign(Object.assign({}, state), { [key]: value })),
     };
 }
@@ -59,7 +59,7 @@ function createContextStore(initialState) {
             const { state, setState } = (0, react_1.useContext)(Context);
             return {
                 state,
-                set: (state) => setState(state),
+                set: (state) => setState((prev) => Object.assign({}, prev, state)),
                 update: (key, value) => setState(Object.assign(Object.assign({}, state), { [key]: value })),
             };
         },

@@ -1,7 +1,7 @@
 import { FunctionComponent, ReactNode } from 'react';
 interface Store<State> {
     state: State;
-    set: (state: State) => void;
+    set: (state: Partial<State>) => void;
     update: <Key extends keyof State>(key: Key, value: State[Key]) => void;
 }
 /**

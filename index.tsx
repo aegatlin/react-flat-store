@@ -10,7 +10,7 @@ import React, {
 
 interface Store<State> {
   state: State
-  set: (state: State) => void
+  set: (state: Partial<State>) => void
   update: <Key extends keyof State>(key: Key, value: State[Key]) => void
 }
 
@@ -25,7 +25,7 @@ export function useStore<State>(initialState: State): Store<State> {
 
   return {
     state,
-    set: (state) => setState(state),
+    set: (state) => setState((prev) => Object.assign({}, prev, state)),
     update: (key, value) => setState({ ...state, [key]: value }),
   }
 }
@@ -72,7 +72,7 @@ export function createContextStore<State>(
 
       return {
         state,
-        set: (state) => setState(state),
+        set: (state) => setState((prev) => Object.assign({}, prev, state)),
         update: (key, value) => setState({ ...state, [key]: value }),
       }
     },
